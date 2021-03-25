@@ -53,3 +53,7 @@ button {
     color: white;
     padding: 8px;
 }
+
+.button__search {
+    margin-top: 20px;
+}
