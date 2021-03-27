@@ -25,6 +25,8 @@ weatherForm.addEventListener('submit', (e) => {
 })
 
 currentLocation.addEventListener('click', () => {
+    messageOne.textContent = 'Loading...'
+
     navigator.geolocation.getCurrentPosition((position) => {
         fetch(`/weather/currentLocation?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`).then((response) => {
             response.json().then((data) => {

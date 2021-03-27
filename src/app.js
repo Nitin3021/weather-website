@@ -2,7 +2,7 @@ const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
 const forecast = require('./utils/forecast')
-const geocode = require('./utils/geocode')
+const { geocode, reverseGeocode } = require('./utils/geocode')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -58,10 +58,10 @@ app.get('/weather', (req, res) => {
             if (error) {
                 return res.send({ error })
             }
-    
+
             res.send({
                 forecast: forecastData,
-                location, 
+                location,
                 address: req.query.address
             })
         })
@@ -75,13 +75,19 @@ app.get('/weather/currentLocation', (req, res) => {
         })
     }
 
-    forecast(req.query.latitude, req.query.longitude, (error, forecastData) => {
+    reverseGeocode(req.query.latitude, req.query.longitude, (error, { location } = {}) => {
         if (error) {
             return res.send({ error })
         }
+        forecast(req.query.latitude, req.query.longitude, (error, forecastData) => {
+            if (error) {
+                return res.send({ error })
+            }
 
-        res.send({
-            forecast: forecastData
+            res.send({
+                location: location,
+                forecast: forecastData
+            })
         })
     })
 })

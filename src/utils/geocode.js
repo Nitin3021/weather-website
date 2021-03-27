@@ -18,4 +18,23 @@ const geocode = (address, callback) => {
     })
 }
 
-module.exports = geocode
+const reverseGeocode = (latitude, longitude, callback) => {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=pk.eyJ1Ijoibml0aW4zMCIsImEiOiJjazB1ZHJmYmswZ2J0M25taW0wMmQzdDJqIn0.1JwQhVMiMsRZvaoRQWckZQ&limit=1`
+
+    request({ url, json: true }, (error, { body }) => {
+        if (error) {
+            callback('Unable to connect to location services', undefined)
+        } else if (body.features.length === 0) {
+            callback('Unable to find location. Try another search!', undefined)
+        } else {
+            callback(undefined, {
+                location: body.features[0].place_name
+            })
+        }
+    })
+}
+
+module.exports = {
+    geocode,
+    reverseGeocode
+}
